@@ -9,11 +9,12 @@ from bs4 import BeautifulSoup
 
 def get_full_year_results(year: int, comp: str = 'AFLM') -> pd.DataFrame:
     '''
-    Get full year of AFL results for given year.
+    Scrapes full year of AFL results for given year from footywire.
+    Please use sparingly so as to not overload the site.
 
     Args:
         year (int): year you're interested in
-        comp (_type_, optional): defaults to AFL Mens
+        comp (str, optional): defaults to AFL Mens
 
     Returns:
         pd.DataFrame: Results dataframe
