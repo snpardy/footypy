@@ -47,9 +47,9 @@ test = [
 ]
 
 [project.urls]
-Documentation = "https://github.com/microsoft/python-package-template/tree/main#readme"
-Source = "https://github.com/microsoft/python-package-template"
-Tracker = "https://github.com/microsoft/python-package-template/issues"
+Documentation = "https://github.com/snpardy/footypy/tree/main#readme"
+Source = "https://github.com/snpardy/footypy"
+Tracker = "https://github.com/snpardy/footypy/issues"
 
 [tool.flit.module]
 name = "footypy"

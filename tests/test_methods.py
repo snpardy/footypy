@@ -1,11 +1,8 @@
-#   ---------------------------------------------------------------------------------
-#   Copyright (c) Microsoft Corporation. All rights reserved.
-#   Licensed under the MIT License. See LICENSE in project root for information.
-#   ---------------------------------------------------------------------------------
-"""This is a sample python file for testing functions from the source code."""
+import pickle
 from __future__ import annotations
 
-from footypy import get_full_year_results
+import footypy
+from footypy import get_full_year_results, get_match_details
 
 
 def get_full_year_results_test():
@@ -16,16 +13,12 @@ def get_full_year_results_test():
     get_full_year_results()
 
 
-def test_hello(unit_test_mocks: None):
+def test_get_match_details():
     """
     This is a simple test, which can use a mock to override online functionality.
     unit_test_mocks: Fixture located in conftest.py, implictly imported via pytest.
     """
-    pass
 
-def test_int_hello():
-    """
-    This test is marked implicitly as an integration test because the name contains "_init_"
-    https://docs.pytest.org/en/6.2.x/example/markers.html#automatically-adding-markers-based-on-test-names
-    """
-    pass
+    footy_wire_match_id = 5962
+    df = get_match_details(footy_wire_match_id)
+    footypy.scrape._detail_helper_player_stats(soup)

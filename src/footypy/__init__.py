@@ -3,7 +3,7 @@
 #   -------------------------------------------------------------
 from __future__ import annotations
 
-from .data import get_full_year_results
+from .scrape import get_full_year_results, get_match_details
 
 __version__ = "0.0.1"
 
