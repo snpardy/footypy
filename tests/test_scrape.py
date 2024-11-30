@@ -2,7 +2,7 @@ import pickle
 from __future__ import annotations
 
 import footypy
-from footypy import get_full_year_results, get_match_details
+from footypy import scrape
 
 
 def get_full_year_results_test():
@@ -10,7 +10,7 @@ def get_full_year_results_test():
     This defines the expected usage, which can then be used in various test cases.
     Pytest will not execute this code directly, since the function does not contain the suffex "test"
     """
-    get_full_year_results()
+    scrape.get_full_year_results()
 
 
 def test_get_match_details():
@@ -20,5 +20,5 @@ def test_get_match_details():
     """
 
     footy_wire_match_id = 5962
-    df = get_match_details(footy_wire_match_id)
-    footypy.scrape._detail_helper_player_stats(soup)
+    df = scrape.get_match_details(footy_wire_match_id)
+    scrape._detail_helper_player_stats(soup)
