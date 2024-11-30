@@ -2,12 +2,12 @@ from copy import deepcopy
 from datetime import date, datetime
 import os
 import re
-import requests
 import pickle as pkl
 
+from bs4 import BeautifulSoup
 import numpy as np
 import pandas as pd
-from bs4 import BeautifulSoup
+import requests
 
 def get_full_year_results(year: int, comp: str = 'AFLM') -> pd.DataFrame:
     '''
