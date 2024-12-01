@@ -16,7 +16,7 @@ class Store():
         
         if new_db:
             print('creating new tables')
-            create_results = '''
+            create_tables = '''
             CREATE TABLE results (
                 match_id               INTEGER NOT NULL,
                 footy_wire_match_id    INTEGER,
@@ -31,13 +31,37 @@ class Store():
                 bye                    BOOL,
                 PRIMARY KEY (match_id)
             );
-            
-            '''
-            # CREATE TABLE player_match_details (
-                
-            # );
-            
-            self.connection.sql(create_results)
+
+            CREATE TABLE match_details (
+                player_match_id        VARCHAR NOT NULL,
+                match_id               INTEGER NOT NULL,
+                footy_wire_match_id    INTEGER NOT NULL,
+                kicks                  INTEGER,
+                handballs              INTEGER,
+                disposals              INTEGER,
+                marks                  INTEGER,
+                goals                  INTEGER,
+                behinds                INTEGER,
+                tackles                INTEGER,
+                hitouts                INTEGER,
+                goal_assists           INTEGER,
+                inside_50s             INTEGER,
+                clearances             INTEGER,
+                clangers               INTEGER,
+                rebound_50s            INTEGER,
+                frees_for              INTEGER,
+                frees_against          INTEGER,
+                afl_fantasy            INTEGER,
+                supercoach             INTEGER,
+                player                 VARCHAR,
+                subbed_on              BOOL,
+                subbed_off             BOOL,
+                unused_sub             BOOL,
+                team                   VARCHAR,
+                brownlow_votes         FLOAT,
+            );
+            '''            
+            self.connection.sql(create_tables)
 
     def get_full_year_results(self, year: int, end_year: int = None, force_update: bool = False) -> pd.DataFrame:    
         '''
@@ -104,13 +128,47 @@ class Store():
         return df
 
     def get_match_details_results(self, footy_wire_match_ids: list, force_update: bool = False) -> pd.DataFrame:
-        pass 
+        if force_update:
+            filled_matches = set()
+        else:
+            filled_matches = {y[0] for y in 
+                                self.connection.execute('''
+                                    SELECT
+                                    footy_wire_match_id,
+                                    count(*)
+                                    from match_details
+                                    where footy_wire_match_id in ?
+                                    group by footy_wire_match_id
+                                    ''', [footy_wire_match_ids]).fetchall()}
+        
+        scrape_matches = list(set(footy_wire_match_ids) - filled_matches)
+        
+        match_id_lookup = {r[0]: r[1] for r in 
+                           (
+                               self
+                               .connection.execute(
+                                   'SELECT DISTINCT footy_wire_match_id, match_id from results WHERE footy_wire_match_id in ?',
+                                   [scrape_matches])
+                               .fetchall()
+                           )
+        }
+
+        for match in scrape_matches:
+            df = scrape.get_match_details(match)
+            
+            df['match_id'] = df.footy_wire_match_id.map(match_id_lookup)
+            df['player_match_id'] =  df.player + '_' + df.match_id.astype(str)
+            replace_query = 'INSERT OR REPLACE INTO match_details BY NAME SELECT * FROM df'
+
+            self.connection.sql(replace_query)
+            
+        df = self.connection.execute('SELECT * FROM match_details where footy_wire_match_id in ?', [footy_wire_match_ids]).df()
+        
+        return df
+
           
 
 if __name__ == '__main__':
     path = '../test_store.db'
     store = Store(path)
-    
-    df = store.get_full_year_results(2015, 2024)
-    
-    df
+    m = store.get_match_details_results([11182], force_update=True)
