@@ -9,7 +9,6 @@ from footypy import scrape
 class Store():
 
     def __init__(self, path: str):
-        print('init')
         new_db = not os.path.isfile(path)
         self.path = path
         self.connection = duckdb.connect(path)
@@ -154,21 +153,21 @@ class Store():
         }
 
         for match in scrape_matches:
-            df = scrape.get_match_details(match)
-            
-            df['match_id'] = df.footy_wire_match_id.map(match_id_lookup)
-            df['player_match_id'] =  df.player + '_' + df.match_id.astype(str)
-            replace_query = 'INSERT OR REPLACE INTO match_details BY NAME SELECT * FROM df'
+            try:
+                df = scrape.get_match_details(match)
+                
+                df['match_id'] = df.footy_wire_match_id.map(match_id_lookup)
+                df['player_match_id'] =  df.player + '_' + df.match_id.astype(str)
+                replace_query = 'INSERT OR REPLACE INTO match_details BY NAME SELECT * FROM df'
 
-            self.connection.sql(replace_query)
+                self.connection.sql(replace_query)
             
+            except Exception:
+                print(f'Scraper error for footy_wire_match_id: {match}')
+                            
         df = self.connection.execute('SELECT * FROM match_details where footy_wire_match_id in ?', [footy_wire_match_ids]).df()
         
         return df
 
-          
-
-if __name__ == '__main__':
-    path = '../test_store.db'
-    store = Store(path)
-    m = store.get_match_details_results([11182], force_update=True)
+    def execute(self, query, params=None):
+        return self.connection.execute(query, params).df()

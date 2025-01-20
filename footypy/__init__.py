@@ -3,7 +3,6 @@
 #   -------------------------------------------------------------
 from __future__ import annotations
 
-from .scrape import get_full_year_results, get_match_details
+from . import scrape, store
 
 __version__ = "0.0.1"
-
