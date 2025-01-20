@@ -23,4 +23,4 @@ store.execute("SELECT * from results WHERE home_team = 'Richmond' and year(times
 
 Currently, team level match results and individual player match performance statistics are available.
 
-Package name is of course inspired by the [iconic ad](https://www.youtube.com/watch?v=kPyGrU2Ow8w).
+The package name is of course inspired by the [iconic ad](https://www.youtube.com/watch?v=kPyGrU2Ow8w).
