@@ -20,6 +20,7 @@ recent_results = store.get_full_year_results(2020, 2024)  # only 2024 is scraped
 # the store can be queried like any duckdb database
 store.execute("SELECT * from results WHERE home_team = 'Richmond' and year(timestamp) = 2024")
 ```
+This will hopefully enable analysts to build up their own local store of AFL data, and limit requests to our favourite footy statistics websites.
 
 Currently, team level match results and individual player match performance statistics are available.
 
