@@ -79,7 +79,7 @@ class Store():
         end_year = year if end_year is None else end_year
         years = list(range(year, end_year+1))
         if force_update:
-            filled_years = {}
+            filled_years = set()
         else:
             filled_years = {y[0] for y in 
                                 self.connection.execute('''
