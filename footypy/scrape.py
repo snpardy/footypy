@@ -83,7 +83,7 @@ def get_full_year_results(year: int, comp: str = 'AFLM') -> pd.DataFrame:
                     ts = datetime.strptime(match[0].text.strip() + ' ' + str(year),
                                                     '%a %d %b %I:%M%p %Y'
                                                     )
-                    if ts.date() > date.today():
+                    if ts.date() >= date.today():
                         # future rounds
                         week_name.append(current_round)
                         timestamp.append(ts)
