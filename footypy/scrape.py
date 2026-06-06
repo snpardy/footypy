@@ -149,8 +149,10 @@ def get_full_year_results(year: int, comp: str = 'AFLM') -> pd.DataFrame:
 
     max_week = max([int(w) for w in df.week_name.unique() if not w.__contains__('Final')])
 
-    df['week_number'] = df.week_name
+    # Initialize week_number by extracting numeric values from 'Round X' format
+    df['week_number'] = pd.to_numeric(df.week_name.str.extract(r'(\d+)', expand=False), errors='coerce')
 
+    # Assign finals week numbers
     for final, offset in finals_weeks.items():
         df.loc[df.week_name == final, 'week_number'] = max_week + offset
 
@@ -186,6 +188,23 @@ def get_full_year_results(year: int, comp: str = 'AFLM') -> pd.DataFrame:
     if not week_number.empty:
         week_number = week_number.index[0]
         df.loc[df.week_number == week_number, 'week_name'] = 'Gather Round'
+
+    # Sir Doug Nicholls Round (Indigenous Round)
+    # Identify by Dreamtime at G (Richmond vs Essendon at MCG in May-June)
+    dreamtime_week = df[
+        (
+            ((df.home_team == 'Richmond') & (df.away_team == 'Essendon')) |
+            ((df.home_team == 'Essendon') & (df.away_team == 'Richmond'))
+        ) &
+        (df.venue.str.contains('MCG', na=False)) &
+        (df.timestamp.dt.month.isin([5, 6]))
+    ].week_number
+    
+    if not dreamtime_week.empty:
+        df.loc[df.week_number == dreamtime_week.iloc[0], 'week_name'] = "Sir Doug Nicholls Round"
+
+    # Prefix "Round " to numeric week names
+    df.loc[pd.to_numeric(df.week_name, errors='coerce').notna(), 'week_name'] = 'Round ' + df.loc[pd.to_numeric(df.week_name, errors='coerce').notna(), 'week_name'].astype(str)
 
     column_order = ['week_number', 'week_name', 'timestamp', 'venue', 'footy_wire_id', 'home_team', 'away_team',
        'home_score', 'away_score', 'bye',]
@@ -276,13 +295,13 @@ def _detail_helper_player_stats(soup: BeautifulSoup):
         if 'href' in name_row.find_next('a').attrs:
             if name_row.find_next('a').attrs["href"].startswith('pp-'):
                 team_1_stats['player'].append(name_row.find_next('a').attrs["href"])
-                if name_row.findChild('span') is None:
+                if name_row.find('span') is None:
                     team_1_stats['subbed_on'].append(False)
                     team_1_stats['subbed_off'].append(False)
-                elif player.findChild('span')['title'] == 'Subbed Off':
+                elif player.find('span')['title'] == 'Subbed Off':
                     team_1_stats['subbed_on'].append(False)
                     team_1_stats['subbed_off'].append(True)
-                elif player.findChild('span')['title'] in ['Subbed On', 'Activated Substitute']:
+                elif player.find('span')['title'] in ['Subbed On', 'Activated Substitute']:
                     team_1_stats['subbed_on'].append(True)
                     team_1_stats['subbed_off'].append(False)
 
@@ -321,13 +340,13 @@ def _detail_helper_player_stats(soup: BeautifulSoup):
                 break  # end of table
             elif name_row.find_next('a').attrs["href"].startswith('pp-'):
                 team_2_stats['player'].append(name_row.find_next('a').attrs["href"])
-                if player.findChild('span') is None:
+                if player.find('span') is None:
                     team_2_stats['subbed_on'].append(False)
                     team_2_stats['subbed_off'].append(False)
-                elif player.findChild('span')['title'] == 'Subbed Off':
+                elif player.find('span')['title'] == 'Subbed Off':
                     team_2_stats['subbed_on'].append(False)
                     team_2_stats['subbed_off'].append(True)
-                elif player.findChild('span')['title'] in ['Subbed On', 'Activated Substitute']:
+                elif player.find('span')['title'] in ['Subbed On', 'Activated Substitute']:
                     team_2_stats['subbed_on'].append(True)
                     team_2_stats['subbed_off'].append(False)
 

@@ -2,7 +2,6 @@
 name = "footypy"
 version = "0.1.0"
 description = "A python package for Australian Rules Football data and statistics."
-authors = ["Sam Pardy"]
 readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [
