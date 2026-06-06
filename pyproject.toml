@@ -1,22 +1,18 @@
-[tool.poetry]
+[project]
 name = "footypy"
 version = "0.1.0"
 description = "A python package for Australian Rules Football data and statistics."
 authors = ["Sam Pardy"]
 readme = "README.md"
-
-[tool.poetry.dependencies]
-python = "^3.11"
-requests = "^2.32.3"
-numpy = "^2.1.3"
-pandas = "^2.2.3"
-beautifulsoup4 = "^4.12.3"
-duckdb = "^1.1.3"
-
-
-[tool.poetry.group.dev.dependencies]
-ipykernel = "^6.29.5"
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires-python = ">=3.9"
+dependencies = [
+    "bs4>=0.0.2",
+    "db>=0.1.1",
+    "duck>=0.1",
+    "duckdb>=1.4.4",
+    "numpy>=2.0.2",
+    "pandas>=2.3.3",
+    "pytest>=8.4.2",
+    "requests>=2.32.5",
+    "urllib3<=1.26.15",
+]

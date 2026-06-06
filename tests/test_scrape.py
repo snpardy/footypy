@@ -1,7 +1,9 @@
-import pickle
-from __future__ import annotations
+# import pickle
+# from __future__ import annotations
 
-import footypy
+from bs4 import BeautifulSoup
+
+# import footypy
 from footypy import scrape
 
 
@@ -20,5 +22,6 @@ def test_get_match_details():
     """
 
     footy_wire_match_id = 5962
+    # soup = BeautifulSoup(page.content, "html.parser")
     df = scrape.get_match_details(footy_wire_match_id)
-    scrape._detail_helper_player_stats(soup)
+    # scrape._detail_helper_player_stats(soup)
