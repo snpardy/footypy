@@ -1,6 +1,6 @@
 [project]
 name = "footypy"
-version = "0.1.0"
+version = "0.1.1"
 description = "A python package for Australian Rules Football data and statistics."
 readme = "README.md"
 requires-python = ">=3.9"
